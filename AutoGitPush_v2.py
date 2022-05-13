@@ -7,13 +7,13 @@ from credentials import GITHUB_TOKEN
 token = GITHUB_TOKEN
 g = Github(token)
 repoName = "AutoGitPush"
-branch = "main"
+branch = "new_branch"
 
 repo = g.get_user().get_repo(repoName)
 file_list = ['Files.txt']
 commit_message = 'Automated Git Push'
 
-master_ref = repo.get_git_ref('')
+master_ref = repo.get_git_ref(branch)
 master_sha = master_ref.object.sha
 base_tree = repo.get_git_tree(master_sha)
 
