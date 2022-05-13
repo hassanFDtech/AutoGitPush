@@ -1,4 +1,4 @@
-# This method uses the Github's python API to push the file to the repo.
+# This method uses the Github's API to push the file to the repo.
 import base64
 import requests
 import json
@@ -6,12 +6,12 @@ import datetime
 from credentials import GITHUB_TOKEN
 
 
-def push_file(fileName, repo_url, branch, user, token):
+def push_file(fileName, repoName, branch, user, token):
     '''
     Push file update to GitHub repo
 
     // param fileName: the name of the file on the local branch
-    // param repo_url: the github repo slug, i.e. "https://api.github.com/repos/{owner}/{repo}"
+    // param repoName: the github repo slug, i.e. "https://api.github.com/repos/{owner}/{repo}"
     // param branch: the name of the branch to push the file to
     // param user: github username
     // param token: github user token
@@ -20,16 +20,16 @@ def push_file(fileName, repo_url, branch, user, token):
     '''
 
     message = f"Automated commit/push created for the file: {fileName} at {str(datetime.date.today())}"
-    url = "https://api.github.com/repos/%s/branches/%s" % (repo_url, branch)
+    url = "https://api.github.com/repos/%s/branches/%s" % (repoName, branch)
 
-    # get the response of the repo_url/branch
+    # get the response of the repoName/branch
     r = requests.get(url, auth=(user, token))
     if not r.ok:
         print("Error when retrieving branch info from %s" % url)
         print("Reason: %s [%d]" % (r.text, r.status_code))
     rjson = r.json()
     treeurl = rjson['commit']['commit']['tree']['url']
-    # get the response of the file insidde the repo_url/branch/tree
+    # get the response of the file insidde the repoName/branch/tree
     r2 = requests.get(treeurl, auth=(user, token))
     if not r2.ok:
         print("Error when retrieving commit tree from %s" % treeurl)
@@ -56,10 +56,10 @@ def push_file(fileName, repo_url, branch, user, token):
         inputdata["sha"] = str(sha)
     else:
         print("The files: %s, are not found in repos tree %s \nLet's commit the new file and push it.. \n" %
-              (fileName, repo_url))
+              (fileName, repoName))
 
     # Access the url content of the repo where the file is to be committed and pushed
-    updateURL = f"https://api.github.com/repos/{repo_url}/contents/{fileName}"
+    updateURL = f"https://api.github.com/repos/{repoName}/contents/{fileName}"
 
     #  Finally, commit and push the file
     try:
@@ -80,9 +80,9 @@ def push_file(fileName, repo_url, branch, user, token):
 
 if __name__ == '__main__':
     fileName = "Files.txt"
-    repositoryName = "hassanFDtech/AutoGitPush"
+    repoName = "hassanFDtech/AutoGitPush"
     branch = "main"
     username = "hassanFDtech"
     token = GITHUB_TOKEN  # from credentials.py
 
-    push_file(fileName, repositoryName, branch, username, token)
+    push_file(fileName, repoName, branch, username, token)
