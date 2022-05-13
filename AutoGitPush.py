@@ -1,6 +1,6 @@
+# This method uses the Github's python API to push the file to the repo.
 import base64
 import requests
-import base64
 import json
 import datetime
 from credentials import GITHUB_TOKEN
@@ -10,26 +10,29 @@ def push_file(fileName, repo_slug, branch, user, token):
     '''
     Push file update to GitHub repo
     
-    :param fileName: the name of the file on the local branch
-    :param repo_slug: the github repo slug, i.e. username/repo
-    :param branch: the name of the branch to push the file to
-    :param user: github username
-    :param token: github user token
-    :return None
-    :raises Exception: if file with the specified name cannot be found in the repo
+    // param fileName: the name of the file on the local branch
+    // param repo_slug: the github repo slug, i.e. "repository_url": "https://api.github.com/repos/{owner}/{repo}"
+    // param branch: the name of the branch to push the file to
+    // param user: github username
+    // param token: github user token
+    // return None
+    // raises Exception: if file with the specified name cannot be found in the repo
     '''
     
-    message = f"Automated backup created for the file {fileName} as of {str(datetime.date.today())}"
+    message = f"Automated commit/push created for the file {fileName} at {str(datetime.date.today())}"
     path = "https://api.github.com/repos/%s/branches/%s" % (repo_slug, branch)
 
     r = requests.get(path, auth=(user,token))
+
+    # Error Check Handling
     if not r.ok:
         print("Error when retrieving branch info from %s" % path)
         print("Reason: %s [%d]" % (r.text, r.status_code))
         
-    rjson = r.json()
+    rjson = r.json() # Getting json keys
     
     treeurl = rjson['commit']['commit']['tree']['url']
+
     # print(treeurl)
     r2 = requests.get(treeurl, auth=(user,token))
     if not r2.ok:
@@ -78,11 +81,11 @@ def push_file(fileName, repo_slug, branch, user, token):
         print(e)
 
 
-fileName = "Files.txt"
-repositoryName = "username/repository"
-branch = "branchName"
-username = "Git_username"
-token = GITHUB_TOKEN # from credentials.py
+if __name__ == '__main__':
+    fileName = "Files.txt"
+    repositoryName = "hassanFDtech/AutoGitPush"
+    branch = "main"
+    username = "hassanFDtech"
+    token = GITHUB_TOKEN # from credentials.py
 
-
-push_file(fileName,repositoryName,branch,user=username,token=token)
+    push_file(fileName,repositoryName,branch,user=username,token=token)
