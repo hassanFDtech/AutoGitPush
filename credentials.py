@@ -1,1 +1,0 @@
-GITUB_TOKEN = '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'
