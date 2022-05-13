@@ -19,7 +19,7 @@ def push_file(fileName, repo_url, branch, user, token):
     // raises Exception: if file with the specified name cannot be found in the repo
     '''
 
-    message = f"Automated commit/push created for the file {fileName} at {str(datetime.date.today())}"
+    message = f"Automated commit/push created for the file: {fileName} at {str(datetime.date.today())}"
     url = "https://api.github.com/repos/%s/branches/%s" % (repo_url, branch)
 
     # get the response of the repo_url/branch
